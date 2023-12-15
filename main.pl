@@ -28,9 +28,8 @@ die "Error: $subs_file dont exists in root dir" unless (-e $subs_file);
 sub fetch_all {
   open my $fh, "<", $subs_file or die("Err: cant open subs file.");
   while (my $line = <$fh>) {
-    chomp $line;
     # Skip comments
-    if ($line =~ /^#/) {
+    unless ($line =~ /^http/ {
       next;
     }
 
