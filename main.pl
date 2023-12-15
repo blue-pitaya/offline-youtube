@@ -3,10 +3,17 @@
 use strict;
 use warnings;
 
+my $video_resolution = 720;
+
 system "which yt-dlp" and die "Err: yt-dlp is not installed or not in PATH.";
 
-my $subs_filename = "subs.conf"; 
-my $video_resolution = 720;
+my $home = $ENV{HOME} or die 'Err: $HOME is not defined';
+my $root_dir = "$home/Videos/youtube";
+system "mkdir -p $ENV{HOME}/Videos/youtube" and die("Err: cannot make root dir.");
+print "Root dir for youtube videos is: $root_dir\n";
+
+my $subs_file = "$home/notes/fun/yt-subs.md";
+die "Error: $subs_file dont exist" unless (-e $subs_file);
 
 sub try_get_channel_name {
   my $url = shift or die "Err: No url provided.";
@@ -14,22 +21,11 @@ sub try_get_channel_name {
   return $1;
 }
 
-# TODO: check if yt-dlp exists
-
-my $home = $ENV{HOME} or die 'Err: $HOME is not defined';
-my $root_dir = "$home/Videos/youtube";
-system "mkdir -p $ENV{HOME}/Videos/youtube" and die("Err: cannot make root dir.");
-
-print "Root dir for youtube videos is: $root_dir\n";
-
-my $subs_file = "$root_dir/$subs_filename";
-die "Error: $subs_file dont exists in root dir" unless (-e $subs_file);
-
 sub fetch_all {
   open my $fh, "<", $subs_file or die("Err: cant open subs file.");
   while (my $line = <$fh>) {
     # Skip comments
-    unless ($line =~ /^http/ {
+    unless ($line =~ /^http/) {
       next;
     }
 
